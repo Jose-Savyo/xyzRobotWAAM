@@ -1,0 +1,36 @@
+{
+    "name": "xyzRobot",
+    // Usa a imagem oficial completa do Jazzy (inclui Gazebo e ferramentas)
+    "image": "osrf/ros:jazzy-desktop-full",
+
+    // Argumentos vitais para Linux:
+    // 1. --privileged: Permite acessar USB (Teensy) sem mapear porta por porta.
+    // 2. --net=host: Compartilha a rede (importante para comunicação ROS).
+    // 3. DISPLAY e .X11-unix: Permite abrir janelas do Gazebo na sua tela.
+    "runArgs": [
+        "--privileged",
+        "--net=host",
+        "-e", "DISPLAY=${env:DISPLAY}",
+        "-v", "/tmp/.X11-unix:/tmp/.X11-unix"
+    ],
+
+    // Instala extensões úteis DENTRO do container automaticamente
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",       // C++ (obrigatório para ROS)
+                "ms-python.python",         // Python
+                "ms-iot.vscode-ros",        // Ferramentas oficiais do ROS
+                "twxs.cmake",               // Ajuda com CMakeLists.txt
+                "eamodio.gitlens"           // Opcional: melhor visualização de git
+            ]
+        }
+    },
+
+    // Usuário padrão (ROS images usam 'ros' ou 'ubuntu', mas 'root' evita problemas de permissão USB no início)
+    "remoteUser": "root",
+
+    // Comandos para rodar ao criar o container (ex: atualizar pacotes e instalar dependências extras)
+    // Aqui instalamos o suporte a Serial para a Teensy
+    "postCreateCommand": "apt-get update && apt-get install -y python3-serial python3-colcon-common-extensions git"
+}
